@@ -4,14 +4,31 @@ import java.util.concurrent.Executors;
 public class Main {
     public static void main(String[] args) {
 
-       UserBucket userBucket = new UserBucket(1,5,10);
-       UserBucket userBucket1 = new UserBucket(2,4,1);
+        //Sliding Window
+//       UserBucket userBucket = new UserBucket(1,5,10); //5 request in 10 seconds
+//       UserBucket userBucket1 = new UserBucket(2,4,1); //4 requests in 1 seconds
+//        ExecutorService executorService = Executors.newFixedThreadPool(10);
+//        for(int i=1;i<=15;++i){
+//            executorService.execute(() -> userBucket.accessApplication(1));
+//            executorService.execute(() -> userBucket1.accessApplication(2));
+//        }
+//        executorService.shutdown();
+
+
+        // Fixed Window
+        UserBucketFixedWindow userBucket = new UserBucketFixedWindow(1,System.currentTimeMillis(),5,5);
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for(int i=1;i<=15;++i){
-            executorService.execute(() -> userBucket.accessApplication(1));
-            executorService.execute(() -> userBucket1.accessApplication(2));
+        for(int i=0;i<15;++i){
+            executorService.execute(() -> userBucket.grantAccess(1));
+
         }
-        executorService.shutdown();
+
 
     }
 }
+
+/*
+* Why concurrent linked queue is used for rate limit?
+* chieves thread safety using CAS (Compare-And-Swap) operations instead of traditional locks. This makes it a non-blocking data structure.
+*
+* */
