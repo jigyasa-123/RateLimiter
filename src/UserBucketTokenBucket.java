@@ -1,13 +1,12 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class UserBucketFixedWindow {
-    Map<Integer,FixedWindow> userBucketMap;
+public class UserBucketTokenBucket {
+    Map<Integer,TokenBucket> userBucketMap;
 
-     public UserBucketFixedWindow(int id, long startTime,int capacity,int timeWindow){
+     public UserBucketTokenBucket(int id,int capacity,int refillRate,long refillInterval){
          this.userBucketMap = new HashMap<>();
-         this.userBucketMap.put(id,new FixedWindow(capacity,timeWindow,startTime));
+         this.userBucketMap.put(id,new TokenBucket(capacity,refillRate,refillInterval));
     }
 
     public  void grantAccess(int id){

@@ -2,11 +2,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         //Sliding Window
-//       UserBucket userBucket = new UserBucket(1,5,10); //5 request in 10 seconds
-//       UserBucket userBucket1 = new UserBucket(2,4,1); //4 requests in 1 seconds
+//        UserBucket userBucket = new UserBucket(1,3,10); //5 request in 10 seconds
+//        UserBucket userBucket1 = new UserBucket(2,4,1); //4 requests in 1 seconds
 //        ExecutorService executorService = Executors.newFixedThreadPool(10);
 //        for(int i=1;i<=15;++i){
 //            executorService.execute(() -> userBucket.accessApplication(1));
@@ -15,15 +15,25 @@ public class Main {
 //        executorService.shutdown();
 
 
-        // Fixed Window
-        UserBucketFixedWindow userBucket = new UserBucketFixedWindow(1,System.currentTimeMillis(),5,5);
+//        // Fixed Window
+//        UserBucketFixedWindow userBucket = new UserBucketFixedWindow(9, System.currentTimeMillis(), 3, 10);
+//        ExecutorService executorService = Executors.newFixedThreadPool(10);
+//        for (int i = 0; i < 15; ++i) {
+//            executorService.execute(() -> userBucket.grantAccess(9));
+//
+//        }
+//        executorService.shutdown();
+//    }
+
+        UserBucketTokenBucket userBucket = new UserBucketTokenBucket(9,2,1,1000);
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for(int i=0;i<15;++i){
-            executorService.execute(() -> userBucket.grantAccess(1));
+        for (int i = 0; i < 15; ++i) {
+            executorService.execute(() -> userBucket.grantAccess(9));
+            Thread.sleep(3000);
 
         }
 
-
+        executorService.shutdown();
     }
 }
 

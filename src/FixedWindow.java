@@ -3,29 +3,33 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FixedWindow {
 
-    int capacity;
-    int timeWindow;
-    long startTime;
-    Queue<Long> window;
+    private int capacity;
+    private int timeWindow;
+    private long startTime;
+    int count;
 
-    FixedWindow(int capacity,int timeWindow,long startTime){
-        this.capacity  = capacity;
+    final Object lock = new Object();
+
+    FixedWindow(int capacity, int timeWindow, long startTime) {
+        this.capacity = capacity;
         this.timeWindow = timeWindow;
         this.startTime = startTime;
-        window = new ConcurrentLinkedQueue<>();
+        count = 0;
     }
 
-    Boolean grantAccess(){
+    Boolean grantAccess() {
         long currentTime = System.currentTimeMillis();
-        if(window.isEmpty() || (currentTime - startTime)/1000 > timeWindow ){
-            window = new ConcurrentLinkedQueue<>();
-            window.offer(currentTime);
-            return true;
-        }
-        if(window.size() < capacity){
-            window.offer(currentTime);
-            return true;
+        synchronized (lock) {
+            if ((currentTime - startTime) / 1000 > timeWindow) {
+                startTime = currentTime;
+                count = 0;
+            }
+            if (count < capacity) {
+                ++count;
+                return true;
+            }
         }
         return false;
+
     }
 }
